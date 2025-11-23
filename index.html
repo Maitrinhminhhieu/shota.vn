@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday – Created by Shota</title>
+  <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.25);
+      --accent: #ff4b6e;
+      --accent-2: #ffb347;
+      --text-main: #fdfdfd;
+      --text-soft: #e0e0e0;
+      --error: #ff4b4b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+      color: var(--text-main);
+      background: radial-gradient(circle at 0% 0%, #ff9a9e 0%, #fad0c4 30%, #1e3c72 100%);
+      overflow: hidden;
+    }
+
+    .app-bg {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.2), transparent 55%),
+        radial-gradient(circle at 80% 10%, rgba(155, 227, 255, 0.2), transparent 55%),
+        radial-gradient(circle at 20% 80%, rgba(255, 214, 165, 0.25), transparent 55%),
+        radial-gradient(circle at 80% 80%, rgba(214, 126, 255, 0.25), transparent 55%);
+      filter: blur(6px);
+      z-index: -2;
+      animation: bgFloat 18s infinite alternate ease-in-out;
+    }
+
+    @keyframes bgFloat {
+      0% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(0, -10px, 0) scale(1.02); }
+      100% { transform: translate3d(0, 10px, 0) scale(1.01); }
+    }
+
+    .app {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .glass-panel {
+      background: var(--glass-bg);
+      border-radius: 24px;
+      border: 1px solid var(--glass-border);
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(22px) saturate(1.45);
+      -webkit-backdrop-filter: blur(22px) saturate(1.45);
+    }
+
+    .screen {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      min-height: 520px;
+      padding: 24px 20px 64px;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: stretch;
+      text-align: center;
+    }
+
+    .screen.active {
+      display: flex;
+      animation: screenIn 0.7s ease-out forwards;
+    }
+
+    @keyframes screenIn {
+      from { opacity: 0; transform: translateY(26px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Transition slide trái/phải */
+    .screen.slide-out-left {
+      animation: slideOutLeft 0.45s ease forwards;
+    }
+    .screen.slide-in-right {
+      animation: slideInRight 0.45s ease forwards;
+    }
+
+    @keyframes slideOutLeft {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(-40px); }
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    h1, h2, h3 { font-weight: 700; letter-spacing: 0.03em; }
+    h1 { font-size: 1.7rem; margin-bottom: 16px; }
+    p { font-size: 0.98rem; line-height: 1.5; color: var(--text-soft); }
+
+    input, button { font-family: inherit; }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 12px 22px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      font-weight: 600;
+      background: linear-gradient(135deg, #ff6a88, #ff99ac);
+      color: #1b1b1b;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      transition: transform 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+      filter: brightness(1.05);
+    }
+
+    .btn:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+      filter: brightness(0.96);
+    }
+
+    /* Dynamic Island style glass button */
+    .island-btn {
+      border-radius: 999px;
+      padding: 10px 22px;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      background: radial-gradient(circle at 0% 0%, rgba(255,255,255,0.22), transparent 40%),
+                  radial-gradient(circle at 100% 100%, rgba(0,0,0,0.45), rgba(0,0,0,0.8));
+      color: var(--text-main);
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      backdrop-filter: blur(20px) saturate(1.8);
+      -webkit-backdrop-filter: blur(20px) saturate(1.8);
+      box-shadow:
+        0 14px 30px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.08);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, opacity 0.18s ease;
+    }
+
+    .island-btn::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent-2);
+      box-shadow: 0 0 10px rgba(255, 195, 110, 0.9);
+    }
+
+    .island-btn:hover {
+      transform: translateY(-1px) scale(1.03);
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.7),
+        0 0 0 1px rgba(255, 255, 255, 0.14);
+      background: radial-gradient(circle at 0% 0%, rgba(255,255,255,0.28), transparent 45%),
+                  radial-gradient(circle at 100% 100%, rgba(0,0,0,0.5), rgba(0,0,0,0.85));
+    }
+
+    .island-btn:active {
+      transform: translateY(1px) scale(0.97);
+      box-shadow:
+        0 10px 24px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+      opacity: 0.9;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 18px;
+      margin-bottom: 8px;
+    }
+
+    label {
+      font-size: 0.8rem;
+      text-align: left;
+      color: rgba(246, 246, 246, 0.8);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .input-shell {
+      position: relative;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 2px 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .input-shell input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 8px 0;
+      color: var(--text-main);
+      font-size: 0.95rem;
+    }
+
+    .input-shell input::placeholder {
+      color: rgba(255, 255, 255, 0.35);
+    }
+
+    .input-shell span.prefix {
+      font-size: 0.86rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 12px;
+    }
+
+    .tag-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(255, 107, 136, 0.8);
+    }
+
+    .error {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: var(--error);
+      min-height: 16px;
+    }
+
+    .hint {
+      font-size: 0.76rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 6px;
+    }
+
+    .login-avatar {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      background: conic-gradient(from 120deg, #ffb6c1, #ffd1ff, #b5ffff, #ffb6c1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-avatar-inner {
+      width: 90%;
+      height: 90%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 0%, #ffffff, #222);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 700;
+      font-size: 1.4rem;
+      text-shadow: 0 3px 10px rgba(0, 0, 0, 0.7);
+    }
+
+    .tap-indicator {
+      margin-top: auto;
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      animation: bounceTap 1.2s infinite ease-in-out;
+    }
+
+    .tap-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.35);
+      font-size: 1rem;
+    }
+
+    @keyframes bounceTap {
+      0%, 100% { transform: translateY(0); opacity: 0.7; }
+      50% { transform: translateY(-4px); opacity: 1; }
+    }
+
+    .happy-title {
+      font-size: 1.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      text-align: center;
+      word-break: break-word;
+      animation: happyGlow 1.6s ease-in-out forwards;
+    }
+
+    @keyframes happyGlow {
+      0% { opacity: 0; filter: blur(6px); transform: translateY(10px); }
+      50% {
+        opacity: 1; filter: blur(0);
+        text-shadow:
+          0 0 6px rgba(255, 255, 255, 0.9),
+          0 0 18px rgba(255, 126, 178, 0.9),
+          0 0 32px rgba(255, 210, 120, 0.9);
+      }
+      100% {
+        opacity: 1; filter: blur(0);
+        text-shadow:
+          0 0 4px rgba(255, 255, 255, 0.8),
+          0 0 16px rgba(255, 126, 178, 0.7);
+      }
+    }
+
+    .typing {
+      min-height: 80px;
+      font-size: 0.98rem;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .typing span.caret {
+      display: inline-block;
+      width: 8px;
+      height: 1.1em;
+      background: var(--accent-2);
+      margin-left: 2px;
+      animation: caretBlink 0.7s infinite;
+      vertical-align: bottom;
+    }
+
+    @keyframes caretBlink {
+      0%, 40% { opacity: 1; }
+      60%, 100% { opacity: 0; }
+    }
+
+    .warp {
+      animation: warpSpace 4s ease-in-out forwards;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 14px;
+    }
+
+    @keyframes warpSpace {
+      0% { transform: scale(1) rotate(0deg); filter: blur(0); }
+      40% { transform: scale(1.05) rotate(1deg); filter: blur(3px); }
+      70% { transform: scale(0.96) rotate(-1deg); filter: blur(6px); }
+      100%{ transform: scale(1) rotate(0deg); filter: blur(0); }
+    }
+
+    .warp-orbit {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 1px dashed rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .warp-orbit::before,
+    .warp-orbit::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: conic-gradient(from 120deg, rgba(255, 255, 255, 0.6), transparent, rgba(255, 255, 255, 0.8));
+      mix-blend-mode: screen;
+      animation: orbitSpin 3s linear infinite;
+    }
+
+    .warp-orbit::after {
+      animation-direction: reverse;
+      opacity: 0.5;
+    }
+
+    @keyframes orbitSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .warp-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: radial-gradient(circle, #ffffff, #ff99ac);
+      box-shadow: 0 0 24px rgba(255, 177, 193, 0.9);
+    }
+
+    .timeline-tagline {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.82);
+      margin-bottom: 14px;
+    }
+
+    .timeline-bar {
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .timeline-progress {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff9a9e, #fad0c4, #fcb69f);
+      box-shadow: 0 0 16px rgba(255, 190, 170, 0.8);
+      transition: width 0.8s ease-out;
+    }
+
+    .timeline-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #ffeef7;
+      text-shadow: 0 0 18px rgba(0, 0, 0, 0.75);
+      min-height: 1.5em;
+    }
+
+    .highlight-red {
+      color: #ff5c6c;
+      text-shadow:
+        0 0 6px rgba(0, 0, 0, 0.7),
+        0 0 10px rgba(255, 126, 178, 0.7);
+      font-weight: 800;
+      font-size: 1.4rem;
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+      animation: pulseRed 1.4s infinite ease-in-out;
+    }
+
+    @keyframes pulseRed {
+      0%,100% { transform: scale(1); }
+      50%     { transform: scale(1.04); }
+    }
+
+    .fade-soft {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    }
+
+    .fade-soft.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .guess-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+.blessing-line {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  margin-bottom: 8px;
+  text-align: left;
+  font-size: 0.95rem;
+  color: #000; /* màu đen */
+}
+
+    .blessing-line.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .final-big {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 10px;
+      text-shadow:
+        0 0 8px rgba(0, 0, 0, 0.8),
+        0 0 18px rgba(255, 199, 148, 0.8);
+      animation: happyGlow 1.6s ease-in-out forwards;
+    }
+
+    .photo-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #final-photo {
+      position: relative;
+      width: 100%;
+      max-width: 320px;
+      aspect-ratio: 4 / 3;
+      border-radius: 22px;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .photo-piece {
+      position: absolute;
+      background-size: 400% 400%;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transform-origin: center;
+    }
+
+    .photo-piece.shatter {
+      transform:
+        translate(
+          calc((var(--dx, 0) - 0.5) * 280px),
+          calc((var(--dy, 0) - 0.5) * 220px)
+        )
+        scale(0.2)
+        rotate(calc((var(--rot, 0) - 0.5) * 120deg));
+      opacity: 0;
+    }
+
+    .photo-piece.assemble {
+      transition: transform 2.2s cubic-bezier(0.16, 0.9, 0.18, 1.0),
+                  opacity 2.2s ease-out;
+      transform: translate(0, 0) scale(1) rotate(0deg);
+      opacity: 1;
+    }
+
+    .firework-text {
+      font-size: 0.92rem;
+      text-align: left;
+      line-height: 1.6;
+      background: linear-gradient(135deg, #fff6ff, #ffe7c8, #e3f6ff);
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: sparkleText 2s ease-in-out infinite alternate;
+      min-height: 6.5em;
+      white-space: pre-wrap;
+    }
+
+    @keyframes sparkleText {
+      0% { text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); }
+      50% {
+        text-shadow:
+          0 0 10px rgba(255, 255, 255, 1),
+          0 0 20px rgba(255, 193, 148, 1),
+          0 0 28px rgba(148, 222, 255, 1);
+      }
+      100% {
+        text-shadow:
+          0 0 8px rgba(255, 255, 255, 0.9),
+          0 0 18px rgba(255, 193, 148, 0.9);
+      }
+    }
+
+    .signature {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 10;
+    }
+
+    .signature img {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .signature span.label {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      opacity: 0.8;
+    }
+
+    .mt-16 { margin-top: 16px; }
+    .mt-20 { margin-top: 20px; }
+    .mt-auto { margin-top: auto; }
+
+    .fade-in {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+    .fade-out {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+
+    /* HELLO screen */
+    #screen-hello { align-items: center; }
+
+    #hello-typing {
+      font-size: 2.6rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-align: center;
+      min-height: 3.6em;
+      margin-top: auto;
+      margin-bottom: auto;
+      line-height: 1.1;
+    }
+
+    #hello-typing br { line-height: 1.1; }
+
+    /* Timeline pen + Dynamic Island glass */
+    .timeline-pen-stage {
+      margin-top: 18px;
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .timeline-pen-icon {
+      font-size: 1.3rem;
+      opacity: 0.9;
+    }
+
+    .timeline-island-wrapper {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .timeline-island {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 22px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(255,255,255,0.25), transparent 40%),
+        radial-gradient(circle at 100% 100%, rgba(0,0,0,0.5), rgba(0,0,0,0.85));
+      box-shadow:
+        0 16px 34px rgba(0, 0, 0, 0.7),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px) saturate(1.8);
+      -webkit-backdrop-filter: blur(20px) saturate(1.8);
+      max-width: 100%;
+      min-width: 180px;
+      transition: padding 0.35s ease, transform 0.35s ease;
+    }
+
+    .timeline-island-text {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fdfdfd;
+      text-shadow: 0 0 14px rgba(0, 0, 0, 0.85);
+      white-space: nowrap;
+    }
+
+    .timeline-island.animate {
+      animation: islandMorph 0.55s ease;
+    }
+
+    @keyframes islandMorph {
+      0%   { transform: scaleX(0.75) scaleY(0.92); }
+      40%  { transform: scaleX(1.08) scaleY(1.04); }
+      100% { transform: scaleX(1)    scaleY(1); }
+    }
+
+    .timeline-layout { margin-top: 10px; }
+
+    @media (max-width: 400px) {
+      .screen {
+        padding: 18px 14px 60px;
+        min-height: 520px;
+      }
+      .happy-title {
+        font-size: 1.4rem;
+        letter-spacing: 0.18em;
+      }
+      #final-photo { max-width: 290px; }
+      #hello-typing { font-size: 2.2rem; }
+      .timeline-island { min-width: 160px; padding-inline: 18px; }
+      .timeline-island-text { font-size: 1.05rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-bg"></div>
+  <main class="app">
+    <!-- SCREEN 1: LOGIN -->
+    <section id="screen-login" class="screen glass-panel active">
+      <div class="tag">
+        <span class="tag-dot"></span>
+        <span>macOS • birthday session</span>
+      </div>
+      <div class="login-avatar">
+        <div class="login-avatar-inner">TN</div>
+      </div>
+      <h1>Đăng nhập để mở khóa trang này</h1>
+      <p>
+        Giống như bước active một PAGE mới, hãy đăng nhập để bắt đầu chuyến phiêu lưu ***
+        “căng đét” dành riêng cho một người đặc biệt.
+      </p>
+
+      <form id="login-form" autocomplete="off">
+        <div class="field-group">
+          <label for="login-email">Apple ID</label>
+          <div class="input-shell">
+            <span class="prefix">@</span>
+            <input id="login-email" type="text" value="TranNguyen@***.com" disabled />
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="login-password">Mật khẩu</label>
+          <div class="input-shell">
+            <span class="prefix">•••</span>
+            <input
+              id="login-password"
+              type="password"
+              placeholder="Nhập mật khẩu: gợi ý 4 số, năm very special 😉"
+            />
+          </div>
+        </div>
+
+        <div id="login-error" class="error"></div>
+
+        <button type="submit" class="btn mt-16">Đăng nhập</button>
+        <p class="hint">
+          Gợi ý nhỏ xíu: mật khẩu là <strong>4 chữ số</strong>, liên quan đến <strong>2025</strong> ✨
+        </p>
+      </form>
+    </section>
+
+    <!-- SCREEN 2: HELLO -->
+    <section id="screen-hello" class="screen glass-panel">
+      <h2 id="hello-typing"></h2>
+
+      <div class="tap-indicator">
+        <div class="tap-dot">⬤</div>
+        <span>Chạm vào màn hình để tiếp tục</span>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: HAPPY BIRTHDAY -->
+    <section id="screen-main-message" class="screen glass-panel">
+      <div class="tag">
+        <span class="tag-dot"></span>
+        <span>birthday • spotlight mode</span>
+      </div>
+
+      <div id="happy-title" class="happy-title mt-16">
+        ᕼᗩᑭᑭY ᗷIᖇTᕼᗞᗩY!
+      </div>
+
+      <div id="intro-message" class="typing"></div>
+
+      <button id="btn-to-warp" class="btn mt-16">Vào Đây để tiếp tục</button>
+    </section>
+
+    <!-- SCREEN 4: WARP -->
+    <section id="screen-warp" class="screen glass-panel">
+      <div class="warp">
+        <div class="warp-orbit">
+          <div class="warp-dot"></div>
+        </div>
+        <h2>Đang xoay chuyển cả không gian &amp; vũ trụ…</h2>
+        <p>
+          Giữ chặt seatbelt nha, trong vài giây nữa spotlight sẽ chiếu thẳng vào hành trình của hai đứa.
+        </p>
+      </div>
+    </section>
+
+    <!-- SCREEN 5: TIMELINE -->
+    <section id="screen-timeline" class="screen glass-panel">
+      <div class="highlight-red">Bạn Biết Gì Không</div>
+
+      <!-- Stage 1: icon + Dynamic Island glass -->
+      <div id="timeline-pen-stage" class="timeline-pen-stage">
+        <div class="timeline-pen-icon">𐔌՞ ܸ.ˬ.ܸ՞𐦯</div>
+        <div class="timeline-island-wrapper">
+          <div id="timeline-island" class="timeline-island">
+            <span id="timeline-main-value" class="timeline-island-text"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 2: layout cũ -->
+      <div id="timeline-layout" class="timeline-layout fade-soft">
+        <p class="timeline-tagline">
+          Thật sự chúng ta đã đồng hành cùng nhau lâu hơn bạn nghĩ đấy…
+        </p>
+        <div class="timeline-bar">
+          <div id="timeline-progress" class="timeline-progress"></div>
+        </div>
+        <div id="timeline-value" class="timeline-value"></div>
+
+        <div id="timeline-extra" class="mt-16">
+          <p>
+            Thật sự chúng ta đã đồng hành cùng nhau tổng cộng:
+          </p>
+          <p class="mt-16">
+            + <strong>1 năm 2 tháng 23 ngày</strong><br/>
+            + <strong>449 ngày</strong><br/>
+            + <strong>10.776 giờ</strong><br/>
+            + <strong>38.793.600 giây</strong><br/>
+            Rồi đấy !
+          </p>
+          <p class="mt-16">
+            Dù có vẻ như ta thật sự ít giao tiếp, nhưng thời gian vẫn lén mang tới rất nhiều kỉ niệm đáng
+            nhớ. Liệu nó là gì nhỉ? Mình cũng không biết nữa, <strong>bạn đoán thử xem!?</strong>
+          </p>
+          <button id="btn-guess" class="btn mt-20">Đoán Xem</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 6: GUESS -->
+    <section id="screen-guess" class="screen glass-panel">
+      <div id="guess-text" class="guess-text"></div>
+    </section>
+
+    <!-- SCREEN 7: BLESSING -->
+    <section id="screen-blessing" class="screen glass-panel">
+      <h2>Nhắn gửi nhỏ cho tuổi mới ✨</h2>
+      <div class="mt-16" id="blessing-container">
+        <p class="blessing-line">
+          Tuổi mới, chúc you chân cứng đá mềm, biến mọi ước mơ thành reality.
+        </p>
+        <p class="blessing-line">
+          Hãy sống một đời thật passionate, rực rỡ và hạnh phúc theo cách riêng của you.
+        </p>
+        <p class="blessing-line">
+          Dù thế giới ngoài kia có ồn ào thế nào, hãy nhớ rằng you luôn xứng đáng được yêu thương và trân trọng.
+        </p>
+        <p class="blessing-line">
+          Shine bright like a diamond nha! ദ്ദി（• ˕ •マ.ᐟ Luôn ủng hộ you!
+        </p>
+      </div>
+
+      <button id="btn-to-final-question" class="island-btn mt-auto">
+        Chạm vào màn hình (vào nút này) để tiếp tục
+      </button>
+    </section>
+
+    <!-- SCREEN 8: FINAL QUESTION -->
+    <section id="screen-final-question" class="screen glass-panel">
+      <div class="final-big">VÀ CUỐI CÙNG LÀ ?</div>
+      <p class="mt-20">
+        Chuẩn bị cho một mảnh ghép nhỏ nữa của vũ trụ – một khoảnh khắc được “đóng băng” lại thành hình ảnh.
+      </p>
+      <button id="btn-show-photo" class="btn mt-auto">
+        Tiếp tục
+      </button>
+    </section>
+
+    <!-- SCREEN 9: FINAL PHOTO -->
+    <section id="screen-final-photo" class="screen glass-panel">
+      <div class="photo-stage">
+        <div id="final-photo"></div>
+        <div id="firework-text" class="firework-text">
+Big thanks vì you đã dành chút "precious time" để đọc những dòng này. Me thực sự appreciate điều đó! (´▽`ʃ♡ƪ)
+
+Chỉ mong rằng, không chỉ hôm nay mà mỗi ngày trôi qua, cuộc sống của you đều được lấp đầy bởi những happy vibes và những khoảnh khắc unforgettable.
+
+Happy Birthday! 🎂 Chúc you một tuổi mới tâm thật an, lòng thật vui và luôn tràn đầy năng lượng để conquer mọi thử thách phía trước nhé. Always by your side! ✨
+        </div>
+        <button id="btn-download-photo" class="island-btn mt-16">
+          Tải ảnh này xuống
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <div class="signature glass-panel">
+    <span class="label">Created by Shota</span>
+    <img id="signature-logo" src="" alt="Logo Shota" />
+    <!-- # Logo: gắn LINK ẢNH ở JS -->
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const NAME = "Trần Nguyên";
+
+      // # Điền link ảnh LOGO của bạn vào đây
+      const LOGO_URL = "shota.png";   // ví dụ
+
+      // # Điền link ảnh BỨC ẢNH CUỐI CÙNG ở đây
+      const FINAL_PHOTO_URL = "happy.png"; // ví dụ
+
+      const screens = document.querySelectorAll(".screen");
+      const getScreen = (id) => document.getElementById(id);
+
+      const showScreen = (id) => {
+        screens.forEach((s) => s.classList.toggle("active", s.id === id));
+      };
+
+      function transitionScreens(fromId, toId) {
+        const from = getScreen(fromId);
+        const to = getScreen(toId);
+        if (!from || !to) {
+          showScreen(toId);
+          return;
+        }
+
+        to.classList.add("active", "slide-in-right");
+        from.classList.add("slide-out-left");
+
+        setTimeout(() => {
+          from.classList.remove("active", "slide-out-left");
+          to.classList.remove("slide-in-right");
+        }, 450);
+      }
+
+      // Logo
+      const logoImg = document.getElementById("signature-logo");
+      if (LOGO_URL && logoImg) logoImg.src = LOGO_URL;
+
+      /* LOGIN */
+      const loginForm = document.getElementById("login-form");
+      const passwordInput = document.getElementById("login-password");
+      const loginError = document.getElementById("login-error");
+
+      loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const pwd = passwordInput.value.trim();
+        if (pwd === "2025") {
+          loginError.textContent = "";
+          showScreen("screen-hello");
+          startAppleHelloLoop();
+        } else {
+          loginError.textContent = "Mật khẩu chưa đúng rồi, thử lại lần nữa nha 🫣";
+        }
+      });
+
+      /* HELLO */
+      const helloScreen = document.getElementById("screen-hello");
+      const helloTyping = document.getElementById("hello-typing");
+
+      const helloList = [
+        { primary: "Hello", secondary: NAME },
+        { primary: "Xin chào", secondary: NAME },
+        { primary: "Hola", secondary: NAME },
+        { primary: "Bonjour", secondary: NAME },
+        { primary: "Ciao", secondary: NAME },
+        { primary: "안녕하세요", secondary: NAME },
+        { primary: "Konnichiwa", secondary: NAME },
+        { primary: "Xin chào người đặc biệt ✨", secondary: "" },
+      ];
+
+      function typeHello(item, callback) {
+        const fullText = item.secondary
+          ? item.primary + "\n" + item.secondary
+          : item.primary;
+
+        helloTyping.classList.remove("fade-out");
+        helloTyping.classList.add("fade-in");
+        helloTyping.innerHTML = "";
+
+        let i = 0;
+        const interval = setInterval(() => {
+          const current = fullText.slice(0, i);
+          helloTyping.innerHTML = current.replace(/\n/g, "<br>");
+          i++;
+
+          if (i > fullText.length) {
+            clearInterval(interval);
+            setTimeout(() => {
+              helloTyping.classList.remove("fade-in");
+              helloTyping.classList.add("fade-out");
+              setTimeout(callback, 500);
+            }, 900);
+          }
+        }, 60);
+      }
+
+      function startAppleHelloLoop() {
+        let index = 0;
+        function next() {
+          typeHello(helloList[index], () => {
+            index = (index + 1) % helloList.length;
+            next();
+          });
+        }
+        next();
+      }
+
+      helloScreen.addEventListener("click", () => {
+        startIntroMessage();
+        showScreen("screen-main-message");
+      });
+
+      /* INTRO MESSAGE */
+      const introEl = document.getElementById("intro-message");
+      const btnToWarp = document.getElementById("btn-to-warp");
+
+      const introText =
+        "ദ്ദി ˉ͈̀꒳ˉ͈́ )✧ Xin chào, người con gái tuyệt vời today! " +
+        "Hôm nay spotlight là của you, vũ trụ đã gửi tín hiệu là you phải enjoy cái moment này thật đã. " +
+        "Sending you năng lượng slay banh nóc nhaaaaaa !";
+
+      function typeText(element, text, speed, callback) {
+        element.innerHTML = "";
+        let i = 0;
+        const spanCaret = document.createElement("span");
+        spanCaret.className = "caret";
+        const interval = setInterval(() => {
+          element.textContent = text.slice(0, i);
+          element.appendChild(spanCaret);
+          i++;
+          if (i > text.length) {
+            clearInterval(interval);
+            if (callback) callback();
+          }
+        }, speed);
+      }
+
+      function startIntroMessage() {
+        typeText(introEl, introText, 30, () => {});
+      }
+
+      btnToWarp.addEventListener("click", () => {
+        showScreen("screen-warp");
+        setTimeout(() => {
+          startTimeline();
+          showScreen("screen-timeline");
+        }, 4000);
+      });
+
+      /* TIMELINE */
+      const timelineIsland = document.getElementById("timeline-island");
+      const timelineMainValue = document.getElementById("timeline-main-value");
+      const timelineLayout = document.getElementById("timeline-layout");
+      const timelineValue = document.getElementById("timeline-value");
+      const timelineProgress = document.getElementById("timeline-progress");
+      const btnGuess = document.getElementById("btn-guess");
+
+      const timelineValues = [
+        "1 năm 2 tháng 23 ngày",
+        "449 ngày",
+        "10.776 giờ",
+        "38.793.600 giây"
+      ];
+
+      function startTimeline() {
+        timelineLayout.classList.remove("visible");
+        timelineProgress.style.width = "0%";
+        timelineValue.textContent = "";
+        timelineMainValue.textContent = "";
+
+        let index = 0;
+
+        function showValue() {
+          if (index >= timelineValues.length) {
+            setTimeout(() => {
+              timelineLayout.classList.add("visible");
+              setTimeout(() => {
+                timelineValue.textContent = "38.793.600 giây";
+                timelineProgress.style.width = "100%";
+              }, 400);
+            }, 400);
+            return;
+          }
+
+          const value = timelineValues[index];
+
+          // reset animation
+          timelineIsland.classList.remove("animate");
+          // force reflow
+          void timelineIsland.offsetWidth;
+          timelineIsland.classList.add("animate");
+
+          timelineMainValue.classList.remove("fade-out");
+          timelineMainValue.classList.add("fade-in");
+          timelineMainValue.textContent = value;
+
+          setTimeout(() => {
+            timelineMainValue.classList.remove("fade-in");
+            timelineMainValue.classList.add("fade-out");
+            index++;
+            setTimeout(showValue, 500);
+          }, 3000);
+        }
+
+        showValue();
+      }
+
+      btnGuess.addEventListener("click", () => {
+        startGuessSequence();
+        showScreen("screen-guess");
+      });
+
+      /* GUESS */
+      const guessTextEl = document.getElementById("guess-text");
+      const guessPhrases = [
+        "CHÚC MỪNG SINH NHẬT,",
+        "CÔ CÔNG CHÚA CỦA TÔI"
+      ];
+
+      function startGuessSequence() {
+        guessTextEl.textContent = "";
+        let idx = 0;
+
+        function displayPhrase() {
+          if (idx >= guessPhrases.length) {
+            setTimeout(() => {
+              showScreen("screen-blessing");
+              playBlessings();
+            }, 700);
+            return;
+          }
+          guessTextEl.style.opacity = "0";
+          setTimeout(() => {
+            guessTextEl.textContent = guessPhrases[idx];
+            guessTextEl.style.opacity = "1";
+            idx++;
+            setTimeout(displayPhrase, 1300);
+          }, 250);
+        }
+
+        displayPhrase();
+      }
+
+      /* BLESSING */
+      const blessingContainer = document.getElementById("blessing-container");
+      const blessingLines = Array.from(
+        blessingContainer.querySelectorAll(".blessing-line")
+      );
+      const btnToFinalQuestion = document.getElementById(
+        "btn-to-final-question"
+      );
+
+      function playBlessings() {
+        blessingLines.forEach((line) => line.classList.remove("visible"));
+        blessingLines.forEach((line, i) => {
+          setTimeout(() => line.classList.add("visible"), i * 900);
+        });
+      }
+
+      btnToFinalQuestion.addEventListener("click", () => {
+        transitionScreens("screen-blessing", "screen-final-question");
+      });
+
+      /* FINAL QUESTION & PHOTO */
+      const btnShowPhoto = document.getElementById("btn-show-photo");
+      const finalPhotoContainer = document.getElementById("final-photo");
+      const fireworkEl = document.getElementById("firework-text");
+      const fireworkRawText = fireworkEl.textContent.trim();
+
+      btnShowPhoto.addEventListener("click", () => {
+        setupFinalPhoto();
+        transitionScreens("screen-final-question", "screen-final-photo");
+        triggerPhotoAssemble();
+        animateFireworkText();
+      });
+
+      function setupFinalPhoto() {
+        finalPhotoContainer.innerHTML = "";
+        const cols = 4;
+        const rows = 4;
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const piece = document.createElement("div");
+            piece.className = "photo-piece shatter";
+            const wPercent = 100 / cols;
+            const hPercent = 100 / rows;
+            piece.style.width = wPercent + "%";
+            piece.style.height = hPercent + "%";
+            piece.style.left = c * wPercent + "%";
+            piece.style.top = r * hPercent + "%";
+            const bgX = (c / (cols - 1)) * 100;
+            const bgY = (r / (rows - 1)) * 100;
+            piece.style.backgroundImage = FINAL_PHOTO_URL
+              ? `url("${FINAL_PHOTO_URL}")`
+              : "linear-gradient(135deg, #ff9a9e, #fad0c4)";
+            piece.style.backgroundPosition = `${bgX}% ${bgY}%`;
+            piece.style.setProperty("--dx", Math.random().toString());
+            piece.style.setProperty("--dy", Math.random().toString());
+            piece.style.setProperty("--rot", Math.random().toString());
+            finalPhotoContainer.appendChild(piece);
+          }
+        }
+      }
+
+      function triggerPhotoAssemble() {
+        const pieces = finalPhotoContainer.querySelectorAll(".photo-piece");
+        pieces.forEach((piece, i) => {
+          setTimeout(() => {
+            piece.classList.add("assemble");
+          }, 300 + i * 120);
+        });
+      }
+
+      function animateFireworkText() {
+        fireworkEl.textContent = "";
+        let i = 0;
+        const text = fireworkRawText;
+        const interval = setInterval(() => {
+          fireworkEl.textContent = text.slice(0, i);
+          i++;
+          if (i > text.length) clearInterval(interval);
+        }, 20);
+      }
+
+      /* DOWNLOAD PHOTO */
+      const btnDownloadPhoto = document.getElementById("btn-download-photo");
+      btnDownloadPhoto.addEventListener("click", () => {
+        if (!FINAL_PHOTO_URL) {
+          alert("Chưa cấu hình link ảnh cuối cùng (FINAL_PHOTO_URL).");
+          return;
+        }
+        const link = document.createElement("a");
+        link.href = FINAL_PHOTO_URL;
+        link.download = "happy-birthday-photo";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    });
+  </script>
+</body>
+</html>
